@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Shahriyor's School | Tests</title>
+
+    <link rel="icon" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-content">
+
+            <!-- LOGO + SCHOOL NAME -->
+            <div class="brand">
+                <img src="favicon.png" alt="Shahriyor's School Logo">
+
+                <div>
+                    <h1>Shahriyor's School</h1>
+                    <p data-i18n="schoolSubtitle">Onlayn test platformasi</p>
+                </div>
+            </div>
+
+            <!-- LANGUAGE SELECTOR -->
+            <div class="language-selector">
+                <label for="languageSelect">🌐</label>
+
+                <select id="languageSelect" onchange="changeLanguage()">
+                    <option value="uz">🇺🇿 O'zbek</option>
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="en">🇬🇧 English</option>
+                </select>
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- HOME PAGE -->
+    <main id="homePage" class="page">
+
+        <section class="hero">
+
+            <img class="hero-logo" src="favicon.png" alt="Shahriyor's School">
+
+            <h2 data-i18n="welcome">Shahriyor's School ga xush kelibsiz!</h2>
+
+            <p data-i18n="welcomeText">
+                Bilimingizni sinab ko'ring va Shahriyor's School sertifikatiga ega bo'ling.
+            </p>
+
+        </section>
+
+
+        <section class="test-selection">
+
+            <h2 data-i18n="chooseTest">Test turini tanlang</h2>
+
+            <div class="test-cards">
+
+                <!-- ENGLISH -->
+                <div class="test-card">
+
+                    <div class="test-icon">🇬🇧</div>
+
+                    <h3 data-i18n="englishTest">Ingliz tili testi</h3>
+
+                    <p data-i18n="englishDescription">
+                        Ingliz tili bo'yicha bilimingizni sinab ko'ring.
+                    </p>
+
+                    <button onclick="startTest('english')" data-i18n="startEnglish">
+                        Ingliz tili testini boshlash
+                    </button>
+
+                </div>
+
+
+                <!-- IT -->
+                <div class="test-card">
+
+                    <div class="test-icon">💻</div>
+
+                    <h3 data-i18n="itTest">IT testi</h3>
+
+                    <p data-i18n="itDescription">
+                        IT va kompyuter texnologiyalari bo'yicha bilimingizni sinab ko'ring.
+                    </p>
+
+                    <button onclick="startTest('it')" data-i18n="startIT">
+                        IT testini boshlash
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- LEADERBOARD -->
+        <section class="leaderboard-section">
+
+            <h2 data-i18n="leaderboardTitle">🏆 Reyting jadvali</h2>
+
+            <p class="leaderboard-sub" data-i18n="leaderboardSub">
+                Eng yuqori natija ko'rsatgan o'quvchilar (Top 10)
+            </p>
+
+            <div class="leaderboard-tabs">
+
+                <button id="lbTabEnglish" class="lb-tab active" onclick="showLeaderboard('english')" data-i18n="lbEnglish">
+                    🇬🇧 Ingliz tili
+                </button>
+
+                <button id="lbTabIt" class="lb-tab" onclick="showLeaderboard('it')" data-i18n="lbIt">
+                    💻 IT
+                </button>
+
+            </div>
+
+            <div id="leaderboardList" class="leaderboard-list"></div>
+
+            <small id="leaderboardNote" class="leaderboard-note"></small>
+
+        </section>
+
+    </main>
+
+
+    <!-- TEST PAGE -->
+    <main id="testPage" class="page hidden">
+
+        <section class="test-container">
+
+            <div class="test-top">
+
+                <button class="back-button" onclick="goBack()" data-i18n="back">
+                    ← Orqaga
+                </button>
+
+                <div>
+                    <h2 id="testTitle">IT testi</h2>
+                    <p id="questionCounter">Savol 1 / 40</p>
+                </div>
+
+                <div id="timer" class="timer">⏱ 20:00</div>
+
+            </div>
+
+
+            <!-- PROGRESS -->
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+
+
+            <!-- QUESTION -->
+            <div class="question-box">
+
+                <h2 id="questionText">Question</h2>
+
+                <div id="answersContainer" class="answers-container"></div>
+
+            </div>
+
+
+            <div class="navigation">
+
+                <button
+                    id="nextButton"
+                    class="next-button"
+                    onclick="nextQuestion()"
+                    disabled
+                    data-i18n="next"
+                >
+                    Keyingi savol →
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- RESULT PAGE -->
+    <main id="resultPage" class="page hidden">
+
+        <section class="result-container">
+
+            <div id="resultIcon" class="result-icon">🎉</div>
+
+            <h2 id="resultTitle">Tabriklaymiz!</h2>
+
+            <p id="resultMessage" class="result-message">
+                Siz testni muvaffaqiyatli yakunladingiz.
+            </p>
+
+            <div class="score-box">
+
+                <span data-i18n="yourScore">Sizning natijangiz</span>
+
+                <strong id="scoreText">0 / 40</strong>
+
+                <p id="percentageText">0%</p>
+
+                <small id="passNote" class="pass-note"></small>
+
+                <!-- LEVEL -->
+                <div id="levelBox" class="level-box hidden">
+                    <div id="levelIcon" class="level-icon">🥇</div>
+                    <div class="level-info">
+                        <div id="levelText" class="level-text"></div>
+                        <div id="levelNote" class="level-note"></div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- REVIEW -->
+            <button id="reviewToggle" class="review-toggle" onclick="toggleReview()">
+                📝 Xatolarni ko'rish
+            </button>
+
+            <div id="reviewList" class="review-list hidden"></div>
+
+
+            <div id="retrySection" class="retry-section hidden">
+
+                <button class="certificate-button retry-button" onclick="retryTest()" data-i18n="retry">
+                    🔄 Qayta urinish
+                </button>
+
+                <button class="home-link-button" onclick="goHome()" data-i18n="home">
+                    🏠 Bosh sahifa
+                </button>
+
+            </div>
+
+
+            <div id="certificateForm" class="certificate-form">
+
+                <h3 data-i18n="enterNameTitle">Siz testni yakunladingiz!</h3>
+
+                <p data-i18n="enterNameText">
+                    Endi sertifikat yaratish uchun Ism va Familiyangizni kiriting.
+                </p>
+
+                <input
+                    type="text"
+                    id="studentName"
+                    maxlength="60"
+                    data-i18n-placeholder="namePlaceholder"
+                    placeholder="Ism va Familiyangizni kiriting"
+                >
+
+                <button
+                    class="certificate-button"
+                    onclick="generateCertificate()"
+                    data-i18n="generateCertificate"
+                >
+                    Sertifikat yaratish
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- CERTIFICATE PAGE -->
+    <main id="certificatePage" class="page hidden">
+
+        <div class="certificate-wrapper">
+
+            <div id="certificateStage" class="certificate-stage">
+
+                <!-- CERTIFICATE -->
+                <div id="certificate" class="certificate">
+
+                    <!-- Decorative corners -->
+                    <div class="certificate-corner corner-top-left"></div>
+                    <div class="certificate-corner corner-top-right"></div>
+                    <div class="certificate-corner corner-bottom-left"></div>
+                    <div class="certificate-corner corner-bottom-right"></div>
+
+                    <div class="certificate-border">
+
+                        <!-- HEADER -->
+                        <div class="certificate-header">
+
+                            <div class="certificate-number">
+                                <span data-i18n="certificateNo">Sertifikat №</span>
+                                <strong id="certificateNumber">SHS-2026-000000</strong>
+                            </div>
+
+                            <img
+                                src="favicon.png"
+                                class="certificate-logo"
+                                alt="Shahriyor's School Logo"
+                            >
+
+                            <div class="certificate-school">
+                                <h1>Shahriyor's School</h1>
+                                <p data-i18n="educationalCenter">O'quv markazi</p>
+                            </div>
+
+                        </div>
+
+
+                        <!-- TITLE -->
+                        <div class="certificate-heading">
+
+                            <div class="certificate-line"></div>
+
+                            <p class="certificate-title" data-i18n="certificateTitle">
+                                MUVAFFAQIYAT SERTIFIKATI
+                            </p>
+
+                            <div class="certificate-line"></div>
+
+                        </div>
+
+
+                        <!-- PRESENTED TO -->
+                        <p class="presented" data-i18n="presented">
+                            Ushbu sertifikat quyidagi o'quvchiga taqdim etiladi
+                        </p>
+
+
+                        <!-- STUDENT NAME -->
+                        <h2 id="certificateName">Student Name</h2>
+
+                        <div class="name-underline"></div>
+
+
+                        <!-- TEST -->
+                        <p class="certificate-text" data-i18n="completedCourse">
+                            quyidagi testni muvaffaqiyatli yakunlagani uchun
+                        </p>
+
+                        <h3 id="certificateTest">IT testi</h3>
+
+
+                        <!-- SCORE -->
+                        <div class="certificate-score">
+
+                            <div class="score-item">
+                                <span data-i18n="testResult">Test natijasi</span>
+                                <strong id="certificateScore">0 / 40</strong>
+                            </div>
+
+                            <div class="score-divider"></div>
+
+                            <div class="score-item">
+                                <span data-i18n="percentage">Foiz</span>
+                                <strong id="certificatePercentage">0%</strong>
+                            </div>
+
+                            <div class="score-divider"></div>
+
+                            <div class="score-item">
+                                <span data-i18n="levelLabel">Daraja</span>
+                                <strong id="certificateLevel">🥉 Bronza</strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- CONGRATULATIONS -->
+                        <p id="certificateCongratulations" class="certificate-congratulations">
+                            Congratulations on your achievement!
+                        </p>
+
+                        <p class="certificate-description" data-i18n="certificateDescription">
+                            Sizning harakatingiz, mehnatingiz va o'rganishga bo'lgan intilishingiz uchun minnatdormiz.
+                        </p>
+
+
+                        <!-- FOOTER -->
+                        <div class="certificate-footer">
+
+                            <!-- SCHOOL -->
+                            <div class="certificate-footer-item">
+
+                                <div class="signature-line"></div>
+
+                                <strong>Shahriyor's School</strong>
+
+                                <small data-i18n="educationalCenter">O'quv markazi</small>
+
+                            </div>
+
+
+                            <!-- SEAL -->
+                            <div class="certificate-seal">
+
+                                <div class="seal-inner">
+
+                                    <span>✦</span>
+
+                                    <strong>SHAHRIYOR'S</strong>
+
+                                    <small>SCHOOL</small>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- DATE -->
+                            <div class="certificate-footer-item certificate-date">
+
+                                <div class="signature-line"></div>
+
+                                <strong id="certificateDate">30/09/2026</strong>
+
+                                <small data-i18n="date">Sana</small>
+
+                            </div>
+
+
+                            <!-- QR (haqiqiylikni tekshirish) -->
+                            <div id="certificateQrBlock" class="certificate-qr hidden">
+
+                                <div id="certificateQR"></div>
+
+                                <small data-i18n="qrCaption">Tekshirish</small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- BOTTOM BRANDING -->
+                        <div class="certificate-bottom">
+
+                            <span>SHAHRIYOR'S SCHOOL</span>
+
+                            <span>•</span>
+
+                            <span data-i18n="officialCertificate">RASMIY SERTIFIKAT</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTION BUTTONS -->
+            <div class="certificate-actions">
+
+                <button
+                    onclick="printCertificate()"
+                    class="certificate-print-button"
+                    data-i18n="print"
+                >
+                    🖨 Chop etish / PDF saqlash
+                </button>
+
+                <button
+                    onclick="downloadCertificate()"
+                    class="certificate-share-button"
+                    data-i18n="download"
+                >
+                    🖼 PNG yuklab olish
+                </button>
+
+                <button
+                    onclick="shareCertificate()"
+                    class="certificate-share-button"
+                    data-i18n="share"
+                >
+                    📤 Ulashish
+                </button>
+
+                <button
+                    onclick="shareTelegram()"
+                    class="certificate-share-button telegram-button"
+                    data-i18n="telegram"
+                >
+                    ✈️ Telegram
+                </button>
+
+                <button
+                    onclick="copyCertificateLink()"
+                    class="certificate-share-button"
+                    data-i18n="copyLink"
+                >
+                    🔗 Havolani nusxalash
+                </button>
+
+                <button
+                    onclick="goHome()"
+                    class="certificate-home-button"
+                    data-i18n="home"
+                >
+                    🏠 Bosh sahifa
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- VERIFY PAGE (QR orqali ochiladi) -->
+    <main id="verifyPage" class="page hidden">
+
+        <section class="result-container verify-container">
+
+            <div id="verifyIcon" class="result-icon">⏳</div>
+
+            <h2 id="verifyTitle"></h2>
+
+            <p id="verifyText" class="result-message"></p>
+
+            <div id="verifyDetails" class="verify-details hidden"></div>
+
+            <div class="retry-section">
+                <button class="home-link-button" onclick="goHome()" data-i18n="home">
+                    🏠 Bosh sahifa
+                </button>
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- TOAST (qisqa xabarlar) -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+
+    <!-- QR-kod va rasm yaratish kutubxonalari -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
